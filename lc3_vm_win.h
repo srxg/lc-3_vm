@@ -8,6 +8,9 @@
 #ifndef MEM_MAX
 #define MEM_MAX (1 << 16)
 #endif
+#ifndef DEFAULT_START_ADDR
+#define DEFAULT_START_ADDR 0x3000
+#endif
 
 /**
  * Registers

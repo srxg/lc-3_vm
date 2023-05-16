@@ -41,3 +41,14 @@ calculation, allowing programs to, e.g., check logical conditions e.g. ```if (x 
 
 Various situations are signalled to the CPU via a condition flag. Each CPU has a variety of these condition flags.
 In our case, the LC-3 uses only 3 condition flags which indicate the sign of the previous calculation (positive, 0, or negative)
+
+# See "Assembly_LC3.md" for some Assembly examples.
+
+### Procedure
+1. load an instruction from memory, the address of that instruction in memory is in the R_PC register
+2. Increment the R_PC register
+3. Look at the ***opcode*** to determine the type of instruction it should perform
+4. Perform the instruction using the parameters (*operands*) in the instruction.
+5. Go back to step 1.
+
+"You may be wondering, “if the loop keeps incrementing the PC, and we don’t have if or while, won’t it quickly run out of instructions?” No. As we mentioned before [Assembly_LC3.md], some goto-like instructions change the execution flow by jumping the PC around."
