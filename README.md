@@ -6,7 +6,7 @@ This VM simulates the fictional computer "LC-3"
 # To-Do
 1. Set up the hardware components for the VM
    - [x] Memory
-   - [ ] Registers
+   - [x] Registers
    - [ ] Instruction Set
    - [ ] Condition flags
 
@@ -17,4 +17,4 @@ Use a simple array for this.
 
 ### Registers
 We'll use 10 registers. 8 are general purpose, 1 as the program counter (R_PC), and 1 for the condition flags (R_COND).
-
+These will be stored in an array too.
