@@ -7,7 +7,7 @@ This VM simulates the fictional computer "LC-3"
 --
 # To-Do
 1. Set up the hardware components for the VM
-   - [] Memory
-   - [] Registers
-   - [] Instruction Set
-   - [] Condition flags
+   - [ ] Memory
+   - [ ] Registers
+   - [ ] Instruction Set
+   - [ ] Condition flags
