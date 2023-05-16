@@ -34,3 +34,10 @@ of these 16 opcodes. Each instruction is **16 bits** long, but the
           So, for example, a single instruction in a CISC might take the place of several in RISC.
           However, they tend be more complex and expensive to design and manufacture - this and other trade offs cause the designs
           to come "in and out of style".
+
+### Condition Flags
+Condition flags will be stored in R_COND. Condition Flags just provide the give us information about the most recently executed
+calculation, allowing programs to, e.g., check logical conditions e.g. ```if (x < 0) {...}```
+
+Various situations are signalled to the CPU via a condition flag. Each CPU has a variety of these condition flags.
+In our case, the LC-3 uses only 3 condition flags which indicate the sign of the previous calculation (positive, 0, or negative)
