@@ -1,12 +1,23 @@
 #include "lc3_vm_win.h"
 
 int main(int argc, const char* argv[]) {
-
     // load the argument
+    if(argc < 2) {
+        printf("lc3vm [image-file1] ...\n");
+        exit(2);
+    }
 
-    // setup
+    for(int i = 1; i < argc; ++i) {
+        if(!read_image(argv[i])) {
+            printf("Failed to load image: %s\n", argv[i]);
+            exit(1);
+        }
+    }
 
     
+    // setup
+
+
     // Exactly one condition flag should be set at any given time
     // so, seems like it would be best to just set the Z(ero) flag.
     reg[R_COND] = FL_ZRO;

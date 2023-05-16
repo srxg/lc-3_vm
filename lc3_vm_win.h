@@ -1,3 +1,4 @@
+#pragma once
 #ifndef LC3_VM_WIN_H
 #define LC3_VM_WIN_H
 #include <stdio.h>
