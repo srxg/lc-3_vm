@@ -1,7 +1,10 @@
 #ifndef LC3_VM_WIN_H
 #define LC3_VM_WIN_H
+#include <stdio.h>
 #include <stdint.h>
-
+#include <signal.h>
+#include <Windows.h>
+#include <conio.h>
 #ifndef MEM_MAX
 #define MEM_MAX (1 << 16)
 #endif
@@ -51,9 +54,14 @@ enum {
     OP_TRAP     // execute trap
 };
 
+enum {
+    FL_POS = 1, // 1 << 0
+    FL_ZRO = 1 << 1,
+    FL_NEG = 1 << 2
+};
+
 uint16_t memory[MEM_MAX];
 uint16_t reg[R_COUNT];
-
 
 
 #endif
