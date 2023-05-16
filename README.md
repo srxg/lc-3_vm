@@ -26,3 +26,11 @@ The *opcode* just represents some (one) task the CPU knows how to do.
 In LC-3, **there are 16 *opcodes***. So, everything LC-3 can calculate is some sequence
 of these 16 opcodes. Each instruction is **16 bits** long, but the
 *left 4 bits* store the **opcode** while the rest of the bits store the **operand** (the parameters, in this context).
+
+**Note**: x86 has way more instructions (hundreds). ARM and LC-3 have very few - i.e., they have RISCs.
+          larger instruction sets, i.e. that of x86, are called CISCs.
+          While larger ones don't necessarily provide fundamentally new possibilties,
+          they often just make it a little easier/convenient to write assembly for.
+          So, for example, a single instruction in a CISC might take the place of several in RISC.
+          However, they tend be more complex and expensive to design and manufacture - this and other trade offs cause the designs
+          to come "in and out of style".
