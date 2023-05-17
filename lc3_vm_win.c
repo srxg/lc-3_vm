@@ -44,7 +44,6 @@ uint16_t sign_extend(uint16_t x, int bit_count) {
 /*Any time a value is written to a register
  we need to update the flags to indicate its sign.
 We will write a function so that this can be reused:*/
-
 void update_flags(uint16_t r) {
     if(reg[r] == 0) reg[R_COND] = FL_ZRO;
     /* a 1 in the left-most bit indicates negative */
