@@ -44,7 +44,7 @@ uint16_t sign_extend(uint16_t x, int bit_count) {
 /*Any time a value is written to a register
  we need to update the flags to indicate its sign.
 We will write a function so that this can be reused:*/
-void update_flags(uint16_t r) {
+void update_flags(uint16_t r) { // we COULD use a char because we only have 10 registers but uint16_t is used for consistency
     if(reg[r] == 0) reg[R_COND] = FL_ZRO;
     /* a 1 in the left-most bit indicates negative */
     else if (reg[r] >> (BIT_LENGTH-1)) {
@@ -100,11 +100,27 @@ int main(int argc, const char* argv[]) {
 
         switch(opcode) {
             case OP_ADD:
-                // the ADD instruction...
-                // takes two numbers
-                // adds them together
-                // stores the result in a register
+                // the destination register!
+                /**
+                 * move the 3-bits specifying the destination register
+                 * down to bits 0, 1 and 2
+                 * isolate them by anding with 111 (7)
+                 * do the same for sr1!
+                */
+                uint16_t dr = (opcode >> 9) & 0x7;
+                uint16_t sr1 = (opcode >> 6) & 0x7;
                 
+                // are we in immediate mode?
+                uint16_t imm_flag = (opcode >> 5) & 0x1;
+                if(imm_flag) {
+                    // we're in immediate mode
+                    uint16_t imm5 = sign_extend(opcode & 0x1F, 5);
+                    reg[dr] = reg[sr1] + imm5;
+                } else {
+                    // we're in register mode
+                    uint16_t sr2 = opcode & 0x7;
+                    reg[dr] = reg[sr1] + reg[sr2];
+                }
                 break;
             case OP_AND:
                 break;
