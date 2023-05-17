@@ -11,6 +11,9 @@
 #endif
 #ifndef DEFAULT_START_ADDR
 #define DEFAULT_START_ADDR 0x3000
+#ifndef BIT_LENGTH
+#define BIT_LENGTH 16
+#endif
 #endif
 
 /**
@@ -66,6 +69,13 @@ enum {
 
 uint16_t memory[MEM_MAX];
 uint16_t reg[R_COUNT];
+
+uint16_t sign_extend(uint16_t x, int bit_count);
+/*
+    The condition codes are set, based on whether
+    the result is negative, zero, or positive. (Pg. 526)
+*/
+void update_flags(uint16_t r); 
 
 
 #endif
