@@ -121,8 +121,23 @@ int main(int argc, const char* argv[]) {
                     uint16_t sr2 = opcode & 0x7;
                     reg[dr] = reg[sr1] + reg[sr2];
                 }
+
+                update_flags(dr);
+
                 break;
             case OP_AND:
+                uint16_t dr = (opcode >> 9) & 0x7;
+                uint16_t sr1 = (opcode >> 6) & 0x7;
+                
+                uint16_t imm_flag = (opcode >> 5) & 0x1;
+                if(imm_flag) {
+                    uint16_t imm5 = sign_extend(opcode & 0x1F, 5);
+                    reg[dr] = (sr1 & imm5);
+                } else {
+                    uint16_t sr2 = opcode & 0x7;
+                    reg[dr] = (sr1 & sr2);
+                }
+                update_flags(dr);
                 break;
             case OP_NOT:
                 break;
@@ -135,8 +150,48 @@ int main(int argc, const char* argv[]) {
             case OP_LD:
                 break;
             case OP_LDI:
+                // load indirect - load a value from some location in memory
+                // into a register
+                // LDI DR, LABEL
+                // opcode is bits [15:12] = 1010 i.e. 10 (see spec)
+                // bits[11:9] = 3 dit destination register
+                // bits[8:0] = pcoffset9
+                // an immediate value embedded in the instruction
+                // since this loads from memory, we can guess that this value
+                // is some kind of address (to load from)
+                // in the spec: "An address is computed
+                // by sign extending bits [8:0] to 16 bits and adding this value
+                // to the incremented PC". What is stored in memory at this address
+                // is the address of the data to be loaded into DR.
+                uint16_t dr = (opcode >> 9) & 0x7;
+                uint16_t pc_offset_16b = sign_extend(opcode & 0x1FF, 9);
+                // "The resulting sum is an address to a location in memory, and that
+                // address contains, yet another value which is the address of the value to load."
+                // why? LD instruction is limited to address offsets that are 9 bits.
+                // whereas the memory requires 16 bits to address.
+                // LDI is useful for loading values that are stored
+                // in locations far away from the current PC, but to use it,
+                // the address of the final location needs to be stored in a neighbourhood
+                // nearby. Think of it like a local variable in C which is a pointer.
+                // the value of far_data is an address
+                // of course far_data itself (the location in memory containing the address) has an address
+                char* far_data = "apple";
+
+                // In memory it may be layed out like this:
+
+                // Address Label      Value
+                // 0x123:  far_data = 0x456
+                // ...
+                // 0x456:  string   = 'a'
+                // if PC was at 0x100
+                // LDI R0 0x023
+                // would load 'a' into R0
+                reg[dr] = mem_read(mem_read(reg[R_PC] + pc_offset_16b));
+                update_flags(dr);
                 break;
             case OP_LDR:
+                uint16_t dr = (opcode >> 9) & 0x7;
+
                 break;
             case OP_LEA:
                 break;
@@ -149,8 +204,10 @@ int main(int argc, const char* argv[]) {
             case OP_TRAP:
                 break;
             case OP_RES:
+                abort();
                 break;
             case OP_RTI:
+                abort();
                 break;
             default:
                 // bad opcode
