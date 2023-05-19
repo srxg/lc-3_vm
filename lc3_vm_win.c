@@ -166,6 +166,10 @@ int main(int argc, const char* argv[]) {
                 }
                 break;
             case OP_LD:
+                uint16_t dr = (opcode >> 9) & 0x7;
+                uint16_t pc_offset_16 = sign_extend(opcode & 0x1FF, 9);
+                reg[dr] = mem_read(reg[R_PC] + pc_offset_16);
+                update_flags(dr);
                 break;
             case OP_LDI:
                 // load indirect - load a value from some location in memory
@@ -193,7 +197,7 @@ int main(int argc, const char* argv[]) {
                 // nearby. Think of it like a local variable in C which is a pointer.
                 // the value of far_data is an address
                 // of course far_data itself (the location in memory containing the address) has an address
-                char* far_data = "apple";
+                //char* far_data = "apple";
 
                 // In memory it may be layed out like this:
 
@@ -209,7 +213,10 @@ int main(int argc, const char* argv[]) {
                 break;
             case OP_LDR:
                 uint16_t dr = (opcode >> 9) & 0x7;
-
+                uint16_t base_r = (opcode >> 6) & 0x7;
+                uint16_t offset_16 = sign_extend(opcode & 0x3F, 6);
+                reg[dr] = mem_read(reg[base_r] + offset_16);
+                update_flags(dr);
                 break;
             case OP_LEA:
                 break;
