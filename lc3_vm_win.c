@@ -128,18 +128,22 @@ int main(int argc, const char* argv[]) {
             case OP_AND:
                 uint16_t dr = (opcode >> 9) & 0x7;
                 uint16_t sr1 = (opcode >> 6) & 0x7;
-                
                 uint16_t imm_flag = (opcode >> 5) & 0x1;
+
                 if(imm_flag) {
                     uint16_t imm5 = sign_extend(opcode & 0x1F, 5);
-                    reg[dr] = (sr1 & imm5);
+                    reg[dr] = (reg[sr1] & imm5);
                 } else {
                     uint16_t sr2 = opcode & 0x7;
-                    reg[dr] = (sr1 & sr2);
+                    reg[dr] = (reg[sr1] & reg[sr2]);
                 }
                 update_flags(dr);
                 break;
             case OP_NOT:
+                uint16_t dr = (opcode >> 9) & 0x7;
+                uint16_t sr = (opcode >> 6) & 0x7;
+                reg[dr] = ~(reg[sr]);
+                update_flags(dr);
                 break;
             case OP_BR:
                 break;
