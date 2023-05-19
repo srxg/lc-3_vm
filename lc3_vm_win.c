@@ -146,8 +146,15 @@ int main(int argc, const char* argv[]) {
                 update_flags(dr);
                 break;
             case OP_BR:
+                uint16_t pc_offset_16 = sign_extend(opcode & 0x1FF, 9);
+                uint16_t cond = (opcode >> 9) & 0x7; // 3 bits nzp
+
+                if(reg[R_COND] & cond) reg[R_PC] += pc_offset_16;
+
                 break;
             case OP_JMP:
+                uint16_t base_r = (opcode >> 6) & 0x7;
+                reg[R_PC] = reg[base_r];
                 break;
             case OP_JSR:
                 break;
