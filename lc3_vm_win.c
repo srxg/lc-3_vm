@@ -157,6 +157,13 @@ int main(int argc, const char* argv[]) {
                 reg[R_PC] = reg[base_r];
                 break;
             case OP_JSR:
+                reg[R_R7] = reg[R_PC]; // linkage back to the calling routine
+                if((opcode >> 11) & 0x1) { // jsr
+                    uint16_t pc_offset_16 = sign_extend((opcode & 0x7FF), 11);
+                    reg[R_PC] += pc_offset_16;
+                } else { // jssr
+                    reg[R_PC] = (opcode >> 6) & 0x7;
+                }
                 break;
             case OP_LD:
                 break;
