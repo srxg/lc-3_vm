@@ -219,8 +219,17 @@ int main(int argc, const char* argv[]) {
                 update_flags(dr);
                 break;
             case OP_LEA:
+                uint16_t dr = (opcode >> 9) & 0x7;
+                uint16_t pc_offset_16 = sign_extend(opcode & 0x1FF, 9);
+                reg[dr] = reg[R_PC] + pc_offset_16;
+                // a memory address can be negative in LC-3 apparently...?
+                update_flags(dr);
                 break;
             case OP_ST:
+                uint16_t sr = (opcode >> 9) & 0x7;
+                uint16_t pc_offset_16 = sign_extend(opcode & 0x1FF, 9);
+                uint16_t mem_addr = reg[R_PC] + pc_offset_16;
+                mem_write(mem_addr, reg[sr]);
                 break;
             case OP_STI:
                 break;
