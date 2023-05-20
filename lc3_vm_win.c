@@ -54,6 +54,22 @@ void update_flags(uint16_t r) { // we COULD use a char because we only have 10 r
     }
 }
 
+// **The first 16 bits of the program file specify the address in memory where the program should start**
+// This address is called the **origin**
+
+void read_img_file(FILE* file) {
+    uint16_t origin;
+    // fread - reads data from the given stream into the
+    // array point to.
+    // fread(pointer, size_t "size", size_t nmemb, FILE *stream)
+    // pointer should point to a block of memory at least of size (size*nmemb) bytes
+    // "size" (bytes) of each element to be read
+    // nmemb = number of elements, each of size "size" bytes.
+    // stream - obviously, the pointer to a FILE object which specifies an input stream.
+    fread(&origin, sizeof(origin), 1, file);
+    origin = swap16(origin);
+    
+}
 
 int main(int argc, const char* argv[]) {
     // load the argument

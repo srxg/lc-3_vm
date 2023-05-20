@@ -60,3 +60,16 @@ for the trap routines.
 Trap Routines are not defined by *how* they must be implemented, but by what they are supposed to do.
 In our case, when a trap code is invoked, we will call a C function. When finished, execution will return
 to the instructions.
+
+"Even though the trap routines can be written in assembly and this is what a physical LC-3 computer would do, it isn’t the best fit for a VM. Instead of writing our own primitive I/O routines, we can take advantage of the ones available on our OS. This will make the VM run better on our computers, simplify the code, and provide a higher level of abstraction for portability."
+
+## Loading Programs...
+How do instructions get into memory in the first place?
+Assembly -> Machine Code results in a file containing an array of instructions and data.
+So, load it in by copying the contents right into an address in memory.
+
+**The first 16 bits of the program file specify the address in memory where the program should start**
+This address is called the **origin**
+
+This MUST be read first, after which the rest of the data can be read from the file into memory
+starting at the origin address.
