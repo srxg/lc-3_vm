@@ -229,13 +229,71 @@ int main(int argc, const char* argv[]) {
                 uint16_t sr = (opcode >> 9) & 0x7;
                 uint16_t pc_offset_16 = sign_extend(opcode & 0x1FF, 9);
                 uint16_t mem_addr = reg[R_PC] + pc_offset_16;
+                
                 mem_write(mem_addr, reg[sr]);
                 break;
             case OP_STI:
+                uint16_t sr = (opcode >> 9) & 0x7;
+                uint16_t pc_offset_16 = sign_extend(opcode & 0x1FF,9);
+                
+                mem_write(mem_read(reg[R_PC] + pc_offset_16), reg[sr]);
                 break;
             case OP_STR:
+                uint16_t sr = (opcode >> 9) & 0x7;
+                uint16_t base_r = (opcode >> 6) & 0x7;
+                uint16_t offset_16 = sign_extend((opcode & 0x3F), 6);
+
+                memw_write(reg[base_r]+offset_16, reg[sr]);
                 break;
             case OP_TRAP:
+                switch(opcode & 0xFF) {
+                    case TRAP_GETC:
+                        reg[R_R0] = (uint16_t) getchar();
+                        update_flags(R_R0);
+                        break;
+                    case TRAP_OUT:
+                        // when you cast a larger integer to a char, the
+                        // higher bits get truncated and only the lowest 8 bits are kept
+                        putc((char) (reg[R_R0] & 0xFF), stdout);
+                        fflush(stdout);
+                        break;
+                    case TRAP_PUTS:
+                        uint16_t* c = memory + reg[R_R0];
+                        while (*c) {
+                            putc((char)*c, stdout);
+                            ++c;
+                        }
+                        fflush(stdout);
+                        break;
+                    case TRAP_IN:
+                        printf("Enter char: ");
+                        char c = getchar();
+                        putc(c, stdout);
+                        fflush(stdout);
+                        reg[R_R0] = (uint16_t) c;
+                        update_flags(R_R0);
+                        break;
+                    case TRAP_PUTSP:
+                        // the characters are contained in consecutive
+                        // memory locations.
+                        // two characters per memory location
+                        // starting the address specified by R0
+                        // char is 1 byte
+                        uint16_t* c = memory + reg[R_R0];
+                        while(*c) {
+                            putchar(((char) *c), stdout);
+                            char c2;
+                            if((c2 = (*c) >> 8)) putchar(c2, stdout);
+                            ++c;
+                        }
+                        fflush(stdout);
+                        break;
+                    case TRAP_HALT:
+                        printf("Halting");
+                        fflush(stdout);
+                        running = 0;
+                        break;
+                }
                 break;
             case OP_RES:
                 abort();

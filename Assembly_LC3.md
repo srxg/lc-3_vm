@@ -40,3 +40,23 @@ ADD R1, R0, -10     ; SUBTRACT 10 from R0 and store the result in R1
 BRn LOOP            ; go back to LOOP if the result was negative
 ... ; R0 is now 10!
 ```
+
+## (Jumping ahead a little) Trap Routines
+LC-3 provides a few predfined routines for performing common I/O interactions, e.g. getting input from the
+keyboard and echoing to the console. These are called **trap routines**.
+**Trap Routines** can be thought of as the Operating System or API for the LC-3. Each trap routine is
+assigned a *trap code* which identifies it (similar to an opcode). To execute a trap routine, the ```TRAP```
+instruction is called with the trap code of the desired routine.
+---
+*"Why are the trap codes not included in the instructions?"*
+because they do not actually introduct new *functionality*. They just provide a convenient way to perform
+a task (similar to OS system calls). In the official simulator for LC-3, trap routines are written in Assembly.
+The ```PC``` is moved to the code of a trap routine whenever it's called. The CPU executes the routine's instructions,
+and when it is complete, the ```PC``` is reset to the location following the initial call.
+### Important Note:
+This is why programs start at address ```0x3000``` - the lower addresses are left empty to leave space
+for the trap routines.
+---
+Trap Routines are not defined by *how* they must be implemented, but by what they are supposed to do.
+In our case, when a trap code is invoked, we will call a C function. When finished, execution will return
+to the instructions.
