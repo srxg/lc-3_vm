@@ -1,19 +1,18 @@
-#pragma once
 #ifndef LC3_VM_WIN_H
 #define LC3_VM_WIN_H
 #include <stdio.h>
 #include <stdint.h>
 #include <signal.h>
-#include <Windows.h>
-#include <conio.h>
-#ifndef MEM_MAX
-#define MEM_MAX (1 << 16)
+#include <Windows.h> // windows only
+#include <conio.h> // _kbhit
+#ifndef MEMORY_MAX
+#define MEMORY_MAX (1 << 16)
 #endif
 #ifndef DEFAULT_START_ADDR
 #define DEFAULT_START_ADDR 0x3000
+#endif
 #ifndef BIT_LENGTH
 #define BIT_LENGTH 16
-#endif
 #endif
 
 /**
@@ -29,11 +28,6 @@
 */
 
 enum {
-    MR_KBSR = 0xFE00, // keyboard status
-    MR_KBDR = 0xFE02  // keyboard data
-}
-
-enum {
     R_R0 = 0,
     R_R1,
     R_R2,
@@ -45,6 +39,12 @@ enum {
     R_PC, // the program counter
     R_COND,
     R_COUNT // not a register
+};
+
+enum {
+    FL_POS = 1 << 0,
+    FL_ZRO = 1 << 1,
+    FL_NEG = 1 << 2,
 };
 
 enum {
@@ -67,9 +67,8 @@ enum {
 };
 
 enum {
-    FL_POS = 1, // 1 << 0
-    FL_ZRO = 1 << 1,
-    FL_NEG = 1 << 2
+    MR_KBSR = 0xFE00, // keyboard status
+    MR_KBDR = 0xFE02  // keyboard data
 };
 
 enum {
@@ -81,7 +80,9 @@ enum {
     TRAP_HALT = 0x25    // halt program
 };
 
-uint16_t memory[MEM_MAX];
+
+
+uint16_t memory[MEMORY_MAX];
 uint16_t reg[R_COUNT];
 
 uint16_t sign_extend(uint16_t x, int bit_count);
@@ -92,5 +93,19 @@ uint16_t sign_extend(uint16_t x, int bit_count);
 void update_flags(uint16_t r); 
 
 void read_img_file(FILE* FILE);
+int read_img(const char* img_path);
+
+uint16_t swap16(uint16_t x);
+
+void mem_write(uint16_t addr, uint16_t val);
+uint16_t mem_read(uint16_t addr);
+
+void disable_input_buffering();
+
+void restore_input_buffering();
+
+uint16_t check_key();
+
+void handle_interrupt(int sig);
 
 #endif
