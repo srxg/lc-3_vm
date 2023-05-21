@@ -7,8 +7,8 @@ This VM simulates the fictional computer "LC-3"
 1. Set up the hardware components for the VM
    - [x] Memory
    - [x] Registers
-   - [ ] Instruction Set
-   - [ ] Condition flags
+   - [x] Instruction Set
+   - [x] Condition flags
 
 ### Memory
 65,536 memory locations storing 16-bit values (2^16 : maximum accessible locations using a 16-bit unsigned int)
