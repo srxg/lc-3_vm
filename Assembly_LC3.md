@@ -73,3 +73,39 @@ This address is called the **origin**
 
 This MUST be read first, after which the rest of the data can be read from the file into memory
 starting at the origin address.
+---
+### Endianness
+How bytes of an integer are interpreted. Endianness only affects how the bytes of the number are arranged in memory.
+Little-endian : the first byte in memory is the least significant digit.
+Big-Endian    : the first byte in memory is the most significant digit.
+
+e.g.
+Imagine 0x0AB0C00D which is 179355661
+In BIG-ENDIAN, the ***MOST* SIGNIFICANT BYTE** is stored
+at the smallest byte address (first). So, it would be stored in memory
+as:
+Byte Address   +0    +1   +2    +3
+Big Endian     0A    B0   C0    0D
+
+In LITTLE-ENDIAN, the ***LEAST* SIGNIFICANT BYTE** is stored
+at the smallest byte address (first). So, it would be stored in memory
+Byte Address   +0    +1   +2    +3
+Big Endian     0D    C0   B0    0A
+
+If you read 0x0AB0C00D from a big-endian system, but interpret it as little-endian, you'd get 0x0DC0B00A instead.
+
+
+## Memory Mapped Registers
+Some special registers can't be accessed from the usual register table, and so a special
+address is reserved for them in memory. To read and write to/from these registers, you just read and write
+to their location in memory. These are called **memory mapped registers**. They are commonly used to interact
+with special hardware devices.
+
+LC-3 has two memory mapped registers that need to be implemented, the **keyboard status register** (``KBSR``) and
+**keyboard data register** (``KBDR``).
+
+``KBSR`` indicates whether a key has been pressed and the ``KBDR`` identifies which key was pressed.
+---
+Although you *can* request keyboard input using GETC, this *blocks execution until input is received*. 
+This is in contrast to ``KBSR`` and ``KBDR`` which allow you to *poll the state* of the device and continue execution,
+so the program can stay responsive while waiting for input.

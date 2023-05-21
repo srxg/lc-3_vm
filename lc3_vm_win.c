@@ -56,19 +56,58 @@ void update_flags(uint16_t r) { // we COULD use a char because we only have 10 r
 
 // **The first 16 bits of the program file specify the address in memory where the program should start**
 // This address is called the **origin**
-
+// the first 16 bits of the program file specify the address in memory
+// where the program should start
 void read_img_file(FILE* file) {
-    uint16_t origin;
-    // fread - reads data from the given stream into the
-    // array point to.
-    // fread(pointer, size_t "size", size_t nmemb, FILE *stream)
-    // pointer should point to a block of memory at least of size (size*nmemb) bytes
-    // "size" (bytes) of each element to be read
-    // nmemb = number of elements, each of size "size" bytes.
-    // stream - obviously, the pointer to a FILE object which specifies an input stream.
+    uint16_t origin; // address in LC-3's memory where the image file should be loaded
+    // read into origin, the first (hence 1) element from "file" of size sizeof(origin) - sizeof(origin)
+    // is 1 byte
     fread(&origin, sizeof(origin), 1, file);
+    // swap to little endian - LC-3 uses big endian (so the image file is big-endian)
+    // whereas most modern computers are little endian.
     origin = swap16(origin);
     
+    // maximum number of 16 bit words that can be read
+    // from the file is determined by the distance from the origin
+    // to the end of the LC-3's memory.
+    uint16_t max_read = MEM_MAX - origin;
+    
+    // point at the memory location
+    // where the image should be loaded.
+    /**
+     * So memory + origin is a pointer to the location in memory where you want to begin
+     * writing the program. If you were to use just origin, it would be a number, not a pointer,
+     * and wouldn't point to the correct place in memory.
+     * In simple terms, memory is the start of your memory space, and origin is how far into that
+     * memory space you need to go. memory + origin gives you a pointer to that location in memory.
+    */
+    uint16_t* p = memory + origin;
+    
+    // read into p max_read number of things 
+    // of size 1 byte (sizeof(uint16_t) = 1 byte) from file.
+    // read then contains the number of elements read in
+    size_t read = fread(p, sizeof(uint16_t), max_read, file);
+
+    // change to little endian
+    while(read-- > 0) {
+        *p = swap16(*p);
+        ++p;
+    }
+
+}
+
+uint16_t swap16(uint16_t x) {
+    return (x << 8) | (x >> 8);
+}
+
+// takes a string of the path of the image file
+// and calls read_img_file 
+int read_img(const char* img_path) {
+    FILE* file = fopen(img_path, "rb");
+    if (!file) return 0;
+    read_img_file(file);
+    fclose(file);
+    return 1;
 }
 
 int main(int argc, const char* argv[]) {
@@ -84,7 +123,6 @@ int main(int argc, const char* argv[]) {
             exit(1);
         }
     }
-
 
     // setup
     signal(SIGINT, handle_interrupt);
