@@ -112,3 +112,8 @@ So, in the case of -1:
 1. Bin of 1 is `00001` in 5 bits.
 2. Flip the bits : `11110`.
 3. Add 1 to the result : `11111`
+
+# Reference Card
+Credits to github.com/atul-g
+
+![Screenshot](lc3-ref-card.png)
